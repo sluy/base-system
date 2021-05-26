@@ -1,0 +1,11 @@
+FROM mongo:4.4.6
+
+# Create app directory
+WORKDIR /usr/src/configs
+
+# Install app dependencies
+COPY replicaSet.js .
+COPY setup.sh .
+
+ENTRYPOINT [ "/bin/bash" ]
+CMD ["./setup.sh"]

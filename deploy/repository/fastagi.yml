@@ -1,0 +1,18 @@
+version: '2'
+services:
+ fastagi:
+  container_name: agi_microvoz
+  command: ["script", "-c", "xinetd -d -dontfork"]
+  #command: ["/usr/sbin/xinetd", "-d -dontfork"]
+  #command: ["service", "xinetd", "restart"]
+  #command: service xinetd restart
+  #image: pataquets/xinetd
+  build:
+    context: ../agi
+#  volumes:
+#     - ../agi/fastagi:/etc/xinetd.d/fastagi
+#     - ../../callcenter2_agi:/usr/src/apps/fastagi
+#  ports:
+#     - 4573:4573
+
+

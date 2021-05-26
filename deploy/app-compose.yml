@@ -1,0 +1,55 @@
+version: '3'
+services:
+  mongo_primary:
+    restart: always
+    extends:
+      file: databases/mongo/docker-compose.yml
+      service: ${MONGO_SERVICE_NAME}-1
+    networks:
+      ${NETWORK_NAME}:
+        ipv4_address: ${MONGO_SERVICE_NODE1_ADDRESS}
+    depends_on:
+      - ${MONGO_SERVICE_NAME}-2
+      - ${MONGO_SERVICE_NAME}-3
+  mongo_secondary_1:
+    restart: always
+    extends:
+      file: databases/mongo/docker-compose.yml
+      service: ${MONGO_SERVICE_NAME}-2
+    networks:
+      ${NETWORK_NAME}:
+        ipv4_address: ${MONGO_SERVICE_NODE2_ADDRESS}
+  mongo_secondary_2:
+    restart: always
+    extends:
+      file: databases/mongo/docker-compose.yml
+      service: ${MONGO_SERVICE_NAME}-3
+    networks:
+      ${NETWORK_NAME}:
+        ipv4_address: ${MONGO_SERVICE_NODE3_ADDRESS}
+  mongo_setup:
+      extends:
+        file: repository/databases.yml
+        service: ${MONGO_SERVICE_NAME}-setup
+      ${NETWORK_NAME}:
+        ipv4_address: ${MONGO_SERVICE_SETUP_ADDRESS}
+      depends_on:
+        - ${MONGO_SERVICE_NAME}-1
+  api:
+      extends:
+        file: api/lb4/docker-compose.yml
+        service: ${API_SERVICE_NAME}
+      ${NETWORK_NAME}:
+        ipv4_address: ${API_SERVICE_ADDRESS}
+      depends_on:
+        - ${MONGO_SERVICE_NAME}-setup
+
+networks:
+  base_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: ${NETWORK_SUBNAME}
+    driver_opts:
+      "com.docker.network.bridge.name": ${NETWORK_BRIDGE_NAME}

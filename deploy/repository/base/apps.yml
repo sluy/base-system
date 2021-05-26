@@ -1,0 +1,12 @@
+version: '2'
+services:
+  apachelegacy:
+    build:
+      context: ../../legacy
+      #    command:
+      #        - start-admin.sh
+    volumes:
+      - ../../legacy/production-start-admin.sh:/usr/local/bin/production-start-admin.sh
+      - ../../legacy/local-start-admin.sh:/usr/local/bin/local-start-admin.sh
+
+

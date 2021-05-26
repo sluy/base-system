@@ -1,0 +1,13 @@
+version: '3'
+services:
+    lb4_api:
+        container_name: ${API_SERVICE_NAME}
+        build:
+            context: ./
+            dockerfile: ./Dockerfile
+        restart: always
+        volumes:
+        - ../../../data/${API_SERVICE_NAME}/app:/data/app
+        - ../../../logs/${API_SERVICE_NAME}:/var/log/app
+        ports:
+        - ${API_SERVICE_PORT}:3000

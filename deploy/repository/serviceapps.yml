@@ -1,0 +1,158 @@
+version: '2'
+services:
+  api:
+    container_name: api_microvoz
+    #image:
+    build:
+      context: ../api
+    volumes:
+      - ../../callcenter0_api:/var/www/html
+    environment:
+      - DB_HOST_SEC=${DB_HOST_SEC}
+      - DB_DATABASE_SEC=${DB_DATABASE_SEC}
+      - DB_USERNAME_SEC=${DB_USERNAME_SEC}
+      - DB_PASSWORD_SEC=${DB_PASSWORD_SEC}
+      - DB_PORT_SEC=${DB_PORT_SEC}
+
+      - DB_HOST_APP=${DB_HOST_APP}
+      - DB_USERNAME_APP=${DB_USERNAME_APP}
+      - DB_PASSWORD_APP=${DB_PASSWORD_APP}
+      - DB_PORT_APP=${DB_PORT_APP}
+
+      - DB_DATABASE_OP=${DB_DATABASE_OP}
+      - DB_DATABASE_ASTERISK=${DB_DATABASE_ASTERISK}
+      - DB_DATABASE_CRM=${DB_DATABASE_CRM}
+
+
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+        #- APP_DEBUG=${APP_DEBUG}
+        #- API_DEBUG=${API_DEBUG}
+        #- API_PREFIX=${API_PREFIX}
+        #- APP_LOG_LEVEL=${APP_LOG_LEVEL}
+        #- APP_ENV=${APP_ENV}
+        #- APP_KEY=${APP_KEY}
+
+      - CACHE_DRIVER=${CACHE_DRIVER}
+      - SESSION_DRIVER=${SESSION_DRIVER}
+      - QUEUE_DRIVER=${QUEUE_DRIVER}
+
+      - APP_MONGO_HOST_NAME=${APP_MONGO_HOST_NAME}
+      - APP_MONGO_HOST_PORT=${APP_MONGO_HOST_PORT}
+      - APP_MONGO_DB_NAME=${APP_MONGO_DB_NAME}
+        #    links:
+        #      - securitydb
+        #      - redisServer
+
+  api2:
+    container_name: api2_microvoz
+    #image:
+    build:
+      context: ../api
+    volumes:
+      - ../../callcenter0_api2:/var/www/html
+    environment:
+      - DB_HOST_SEC=${DB_HOST_SEC}
+      - DB_DATABASE_SEC=${DB_DATABASE_SEC}
+      - DB_USERNAME_SEC=${DB_USERNAME_SEC}
+      - DB_PASSWORD_SEC=${DB_PASSWORD_SEC}
+      - DB_PORT_SEC=${DB_PORT_SEC}
+
+      - DB_HOST_APP=${DB_HOST_APP}
+      - DB_USERNAME_APP=${DB_USERNAME_APP}
+      - DB_PASSWORD_APP=${DB_PASSWORD_APP}
+      - DB_PORT_APP=${DB_PORT_APP}
+
+      - DB_DATABASE_OP=${DB_DATABASE_OP}
+      - DB_DATABASE_ASTERISK=${DB_DATABASE_ASTERISK}
+      - DB_DATABASE_CRM=${DB_DATABASE_CRM}
+
+
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+        #- APP_DEBUG=${APP_DEBUG}
+        #- API_DEBUG=${API_DEBUG}
+        #- API_PREFIX=${API_PREFIX}
+        #- APP_LOG_LEVEL=${APP_LOG_LEVEL}
+        #- APP_ENV=${APP_ENV}
+        #- APP_KEY=${APP_KEY}
+
+      - CACHE_DRIVER=${CACHE_DRIVER}
+      - SESSION_DRIVER=${SESSION_DRIVER}
+      - QUEUE_DRIVER=${QUEUE_DRIVER}
+
+      - APP_MONGO_HOST_NAME=${APP_MONGO_HOST_NAME}
+      - APP_MONGO_HOST_PORT=${APP_MONGO_HOST_PORT}
+      - APP_MONGO_DB_NAME=${APP_MONGO_DB_NAME}
+        #    links:
+        #      - securitydb
+        #      - redisServer
+
+  apiv2:
+    container_name: apiv2_microvoz
+    build:
+      context: ../apiv2
+    volumes:
+      - ../../callcenter0_api_v2:/www
+      
+  php-asterisk-manager:
+    container_name: php_asterisk_manager
+    build:
+      context: ../php_asterisk_manager
+    volumes:
+      - ../../callcenter2_asterisk_manager:/www
+
+  manager:
+    container_name: manager_microvoz
+    working_dir: /usr/src/app
+    command:
+      - npm
+      - start
+    #command: sh -c "cd /usr/src/app && npm start"
+    image: node:10.12.0-alpine
+    volumes:
+      - ../../manager.app:/usr/src/app
+      - ../../frontend:/usr/src/web
+      - ../../callcenter2_gestion:/usr/src/callcenter2_gestion
+      - ../../callcenter0_toolbar/build:/usr/src/callcenter0_toolbar
+    environment:
+      - ASTERISK_MANAGER_HOST=${ASTERISK_MANAGER_HOST}
+      - ASTERISK_MANAGER_PORT=${ASTERISK_MANAGER_PORT}
+      - ASTERISK_MANAGER_USER=${ASTERISK_MANAGER_USER}
+
+      - APP_PROXY_API_TARGET=${APP_PROXY_API_TARGET}
+      - APP_DOMAIN_ORIGIN_NAME=${APP_DOMAIN_ORIGIN_NAME}
+      - APP_WEB_FILE_PATH_LOCATION=${APP_WEB_FILE_PATH_LOCATION}
+
+      - APP_API_TARGET_STAGE=${APP_API_TARGET_STAGE}
+      - APP_DOMAIN_ORIGIN_NAME_STAGE=${APP_DOMAIN_ORIGIN_NAME_STAGE}
+      - APP_WEB_FILE_PATH_LOCATION_STAGE=${APP_WEB_FILE_PATH_LOCATION_STAGE}
+      - APP_LOCAL_LISTEN_PORT=${APP_LOCAL_LISTEN_PORT}
+      - APP_MONGO_DB_NAME=${APP_MONGO_DB_NAME}
+
+        #- APP_API_GENERAL_ACCESS_TOKEN=${APP_API_GENERAL_ACCESS_TOKEN}
+      - APP_API_HOST=${APP_API_HOST}
+      - APP_API_PATH=${APP_API_PATH}
+      - APP_API_PATH_PBX=${APP_API_PATH_PBX}
+      - APP_API_PATH_PBX_MANAGER=${APP_API_PATH_PBX_MANAGER}
+      - APP_API_PATH_PBX_MANAGER_EVENTS=${APP_API_PATH_PBX_MANAGER_EVENTS}
+      - APP_MONGO_HOST_PORT=${APP_MONGO_HOST_PORT}
+      - APP_MONGO_HOST_NAME=${APP_MONGO_HOST_NAME}
+      - APP_LOG_LEVEL=${APP_LOG_LEVEL}
+      - COLLECTION_LOGS_NAME=${COLLECTION_LOGS_NAME}
+
+#    ports:
+#      - "${MANAGER_PUBLIC_PORT}:${APP_LOCAL_LISTEN_PORT}"
+    external_links:
+      - admindbs:admindbs
+      - admindmongo:admindmongo
+      - softphone:websoftphone
+      - gestionHtmlServer:webgestion
+      - callcenter0apiserver:serviceapi
+      - callcenter0reportmanager:reportmanager
+      - mongoServer:mongoserver
+      - redisServer:redisserver
+      - legacyadmin:legacyadmin
+
+
+
