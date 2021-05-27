@@ -1,34 +1,34 @@
 version: '3'
 services:
-    mongo_rs0_1:
-        container_name: ${MONGO_SERVICE_NAME}-1
-        image: ${MONGO_SERVICE_NAME}-1"
+    db_replica_1:
+        container_name: ${DB_SERVICE_NAME}-1
+        image: ${DB_SERVICE_NAME}-1"
         build: ./rs0-1
         ports:
-        - ${MONGO_SERVICE_NODE1_PORT}:27017
+        - ${DB_REPLICA_1_PORT}:27017
         volumes:
-        - ../../../data/${MONGO_SERVICE_NAME}-1/db:/data/db
-        - ../../../logs/${MONGO_SERVICE_NAME}-1:/var/log/mongodb/db
-        - ../../../backup/${MONGO_SERVICE_NAME}-1:/var/log/mongodb/backup
+        - ../../../data/${DB_SERVICE_NAME}-1/db:/data/db
+        - ../../../logs/${DB_SERVICE_NAME}-1:/var/log/mongodb/db
+        - ../../../backup/${DB_SERVICE_NAME}-1:/var/log/mongodb/backup
         - ../../../mongo-backup:/opt/mongo-backup
-    mongo_rs0_2:
-        container_name: ${MONGO_SERVICE_NAME}-2
+    db_replica_2:
+        container_name: ${DB_SERVICE_NAME}-2
         image: "mongo:4.4.6"
         command: --replSet rs0 --oplogSize 128
         ports:
-        - ${MONGO_SERVICE_NODE2_PORT}:27017
+        - ${DB_REPLICA_2_PORT}:27017
         volumes:
-        - ../../../data/mongo/rs0-2/db:/data/db
-    mongo_rs0_3:
-        container_name: ${MONGO_SERVICE_NAME}-3
+        - ../../../data/${DB_SERVICE_NAME}-2/db:/data/db
+    db_repica_3:
+        container_name: ${DB_SERVICE_NAME}-3
         image: "mongo:4.4.6"
         command: --replSet rs0 --oplogSize 128
         ports:
-        - ${MONGO_SERVICE_NODE3_PORT}:27017
+        - ${DB_REPLICA_3_PORT}:27017
         volumes:
-        - ../../../data/mongo/rs0-3/db:/data/db
+        - ../../../data/${DB_SERVICE_NAME}-3/db:/data/db
         
-    mongo_rs0_setup:
-        image: ${MONGO_SERVICE_NAME}-setup
-        container_name: ${MONGO_SERVICE_NAME}-setup
+    db_replica_setup:
+        image: ${DB_SERVICE_NAME}-setup
+        container_name: ${DB_SERVICE_NAME}-setup
         build: ./setup

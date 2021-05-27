@@ -1,0 +1,61 @@
+version: '3'
+services:
+  db_replica_1:
+    restart: always
+    extends:
+      file: databases/${DB_SERVICE_TYPE}/docker-compose.yml
+      service: ${DB_SERVICE_NAME}-1
+    networks:
+      ${NETWORK_NAME}:
+        ipv4_address: ${DB_SERVICE_NODE1_ADDRESS}
+    depends_on:
+      - ${DB_SERVICE_NAME}-2
+      - ${DB_SERVICE_NAME}-3
+  db_replica_2:
+    restart: always
+    extends:
+      file: databases/${DB_SERVICE_TYPE}/docker-compose.yml
+      service: ${DB_SERVICE_NAME}-2
+    networks:
+      ${NETWORK_NAME}:
+        ipv4_address: ${DB_SERVICE_NODE2_ADDRESS}
+  db_replica_3:
+    restart: always
+    extends:
+      file: databases/${DB_SERVICE_TYPE}/docker-compose.yml
+      service: ${DB_SERVICE_NAME}-3
+    networks:
+      ${NETWORK_NAME}:
+        ipv4_address: ${DB_SERVICE_NODE3_ADDRESS}
+  db_replica_setup:
+      extends:
+        file: databases/${DB_SERVICE_TYPE}/docker-compose.yml
+        service: ${DB_SERVICE_NAME}-setup
+      ${NETWORK_NAME}:
+        ipv4_address: ${DB_SERVICE_SETUP_ADDRESS}
+      depends_on:
+        - ${DB_SERVICE_NAME}-1
+  api:
+      extends:
+        file: api/${API_SERVICE_TYPE}/docker-compose.yml
+        service: ${API_SERVICE_NAME}
+      ${NETWORK_NAME}:
+        ipv4_address: ${API_SERVICE_ADDRESS}
+      depends_on:
+        - ${DB_SERVICE_NAME}-setup
+  client:
+      container_name: ${CLIENT_SERVICE_NAME}
+      extends:
+        file: client/${CLIENT_SERVICE_TYPE}/docker-compose.yml
+        service: ${CLIENT_SERVICE_NAME}_client
+      depends_on:
+        - ${API_SERVICE_NAME}
+networks:
+  base_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: ${NETWORK_SUBNAME}
+    driver_opts:
+      "com.docker.network.bridge.name": ${NETWORK_BRIDGE_NAME}

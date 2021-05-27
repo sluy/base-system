@@ -1,12 +1,12 @@
 version: '3'
 services:
-    lb4_api:
-        container_name: ${API_SERVICE_NAME}
+    quasar2_client:
+        container_name: quasar2_client
         build:
             context: ./
             dockerfile: ./Dockerfile
         restart: always
         volumes:
-            - ../../../api/lb4: opt/app
+            - ../../../client/quasar2: opt/app
         ports:
-        - ${API_SERVICE_PORT}:3000
+        - ${QUASAR2_CLIENT_PORT}:8080
